@@ -20,8 +20,10 @@ The project has two seperate parts!
 - A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
 
 # Screen Prints
-![alt text](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
+![MainPage](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
 
+
+![Diff](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Diff.PNG)
 
 # Setup
 Download binaries from **~\bin\debug** folder
