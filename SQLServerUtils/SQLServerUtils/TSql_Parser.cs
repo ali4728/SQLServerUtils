@@ -1,0 +1,287 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+
+namespace SQLServerUtils
+{
+    public class TSql_Parser
+    {
+        public string ExecutePlain(string p_contents)
+        {
+            string contents = p_contents;
+            IList<ParseError> errors = null;
+            string formattedSQL = "";
+            using (StringReader rdr = new StringReader(contents))
+            {
+                TSql140Parser parser = new TSql140Parser(true);
+                TSqlFragment tree = parser.Parse(rdr, out errors);
+
+                foreach (ParseError err in errors) { Console.WriteLine(err.Message); }
+
+                Sql120ScriptGenerator scrGen = new Sql120ScriptGenerator();
+                scrGen.GenerateScript(tree, out formattedSQL);
+
+            }
+
+            formattedSQL = "<pre class=\"prettyprint lang-sql linenums\">" + formattedSQL + "</pre>";
+
+            return formattedSQL;
+        }
+
+
+        public string Execute(string p_contents)
+        {
+            string contents = p_contents;
+
+            StringBuilder htmlRetVal = new StringBuilder();
+            int linecount = 0;
+            //string contents = File.ReadAllText(@"C:\test2.sql");
+
+            IList<ParseError> errors = null;
+            List<string> kw = new List<string> { "alter", "quoted_identifier", "ansi_nulls", "bulk", "go", "use", "select", "from", "where", "order", "group", "by", "insert", "update", "delete", "merge", "into", "having", "exec", "with", "declare", "create", "function", "procedure", "return", "returns", "begin", "end", "as", "if", "while", "for", "set", "try", "catch", "drop", "table", "view", "union", "all", "case", "then", "when", "cross", "apply", "outer", "inner", "left", "join", "and", "or", "on", "else", "raiserror", "throw", "tran", "commit", "rollback", "pivot", "unpivot", "for", "cursor", "open", "is", "in", "not", "null", "over", "partition", "using", "values", "varchar", "tinyint", "integer", "int", "bigint", "sysname", "date", "datetime", "datetime2", "bit", "numeric", "char", "decimal", "varbinary", "execute", "fetch", "nvarchar", "revert", "nocount", "exists", "uniqueidentifier", "output", "index", "raiserror", "print", "on", "off", "nolock", "open", "close", "deallocate", "goto", "image", "ntext", "top", "truncate" };
+            List<string> kw2 = new List<string> { "sum", "avg", "min", "max", "count", "row_number", "rank", "isnull", "coalesce", "nullif", "getdate", "getutcdate", "getdate", "day", "month", "year", "len", "trim", "stuff", "datepart", "eomonth", "suser_sname", "cast", "convert", "db_name", "dateadd", "datediff" };
+            List<string> kw3 = new List<string> { "asciistringliteral" };
+            //TextReader rdr = new StreamReader(@"C:\test.sql");
+            using (StringReader rdr = new StringReader(contents))
+            {
+                TSql140Parser parser = new TSql140Parser(true);
+                //TSql120Parser parser = new TSql120Parser(true);
+                TSqlFragment tree = parser.Parse(rdr, out errors);
+
+                foreach (ParseError err in errors)
+                {
+                    Console.WriteLine(err.Message);
+
+                }
+
+                //using (StreamWriter fmtWriter = new StreamWriter(@"C:\test_fmt.html"))
+                //{
+
+
+
+                string htmltop = @"<div id=""sqlcode"">
+<ol class=""olclass"">
+    <li><code class=""line"">";
+
+                string htmlbottom = @"</code></li>
+</ol>
+</div>";
+                var tok = tree.ScriptTokenStream;
+                string template = "<b style='color:blue'>{0}</b>";
+                string magenta = "<span style='color:magenta'>{0}</span>";
+                string comment = "<span style='color:green'>{0}</span>";
+                string red = "<span style='color:red'>{0}</span>";
+                string gray = "<span style='color:gray'>{0}</span>";
+                string whitespace = "<span style='color:gray'>{0}</span>";
+
+                //fmtWriter.WriteLine(htmltop);
+                htmlRetVal.AppendLine(htmltop);
+
+                //int rnCountter = 0;
+                //int char10Counter = 0;
+                //bool rn = false;
+
+                //foreach (var item in tok)
+                //{
+                //    if (item.Text != null && item.Text.Equals("\r\n"))
+                //    {
+                //        rnCountter++;
+                //    }
+                //    else if (item.Text != null && item.TokenType == TSqlTokenType.WhiteSpace && item.Text.Length == 1)
+                //    {
+                //        char[] ca = item.Text.ToCharArray();
+
+                //        for (int i = 0; i < ca.Length; i++)
+                //        {
+                //            int kk = (int)ca[i];
+                //            if (kk == 10 || kk == 13)
+                //            {
+                //                char10Counter++;
+                //            }
+                //        }
+                //    }
+                //}
+
+                //if (rnCountter > char10Counter)
+                //{
+                //    rn = true;
+                //}
+
+
+                foreach (var item in tok)
+                {
+                    // Console.WriteLine("type: " + item.TokenType.ToString().PadRight(30, ' ') + " text: " + item.Text);
+                    string tt = item.TokenType.ToString().ToLower().Trim();
+                    string txt = "QWERTYUIO8";
+                    string origstr = "QWERTYUIO8";
+
+
+
+
+                    if (item.Text != null)
+                    {
+                        txt = item.Text.Trim().ToLower();
+                        origstr = item.Text.Trim();
+
+                    }
+
+                    if (kw.Contains(txt))
+                    {
+                        string fmt = string.Format(template, txt);
+                        //fmtWriter.Write(fmt.ToUpper());
+                        htmlRetVal.Append(fmt.ToUpper());
+                    }
+                    else if (kw2.Contains(txt))
+                    {
+                        string fmt = string.Format(magenta, txt);
+                        //fmtWriter.Write(fmt.ToUpper());
+                        htmlRetVal.Append(fmt.ToUpper());
+                    }
+                    else if (kw3.Contains(tt) && !txt.Equals("QWERTYUIO8"))
+                    {
+                        string fmt = string.Format(red, origstr);
+                        //fmtWriter.Write(fmt);
+                        htmlRetVal.Append(fmt);
+                    }
+                    else if (item.TokenType == TSqlTokenType.UnicodeStringLiteral && !txt.Equals("QWERTYUIO8"))
+                    {
+                        string fmt = string.Format(red, origstr);
+                        //fmtWriter.Write(fmt);
+                        htmlRetVal.Append(fmt);
+                    }
+                    else if (item.Text != null && item.Text.Equals("\r\n"))
+                    {
+                        linecount++;
+                        //fmtWriter.WriteLine("</li><li>");
+                        htmlRetVal.AppendLine("</code></li><li><code class=\"line\">");
+                    }
+                    else if (item.Text != null && item.TokenType == TSqlTokenType.WhiteSpace && item.Text.Length == 1)
+                    {
+                        char[] ca = item.Text.ToCharArray();
+                        bool newline = false;
+                        for (int i = 0; i < ca.Length; i++)
+                        {
+                            int kk = (int)ca[i];
+                            if (kk == 10 || kk == 13)
+                            {
+                                linecount++;
+                                htmlRetVal.AppendLine("</code></li><li><code class=\"line\">");
+                                newline = true;
+                            }
+                        }
+
+                        if (!newline)
+                        {
+                            string fmt = string.Format(whitespace, ParseWhiteSpace(item.Text));
+                            htmlRetVal.Append(fmt);
+                        }
+                    }
+                    else if (item.Text != null && item.TokenType == TSqlTokenType.WhiteSpace)
+                    {
+                        string fmt = string.Format(whitespace, ParseWhiteSpace(item.Text));
+                        //fmtWriter.Write(fmt);
+                        htmlRetVal.Append(fmt);
+                    }
+                    else if (item.TokenType == TSqlTokenType.MultilineComment)
+                    {
+
+                        string mls = origstr.Replace("\t", "    ");
+                        mls = mls.Replace(" ", "&nbsp;");
+
+                        string[] mlsary = mls.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                        foreach (string it in mlsary)
+                        {
+                            string fmt = string.Format(comment, it);
+                            //fmtWriter.Write(fmt);
+                            htmlRetVal.Append(fmt);
+                            if (!it.Contains("*/")) // dont put new line after the end of multi line comment, it is taken care of by the new line 
+                            {
+                                //fmtWriter.WriteLine("</li><li>");
+                                htmlRetVal.AppendLine("</code></li><li><code class=\"line\">");
+                                linecount++;
+                            }
+                        }
+
+                    }
+                    else if (item.TokenType == TSqlTokenType.SingleLineComment)
+                    {
+                        string mls = origstr.Replace("\t", "    ");
+                        mls = mls.Replace(" ", "&nbsp;");
+
+                        string fmt = string.Format(comment, mls);
+                        //fmtWriter.Write(fmt);
+                        htmlRetVal.Append(fmt);
+                        //fmtWriter.WriteLine("</li><li>");
+
+                    }
+                    //else if (tt.Contains("variable"))
+                    //{
+                    //    string fmt = string.Format(gray, origstr);
+                    //    fmtWriter.Write(fmt);
+                    //}
+                    else
+                    {
+                        //fmtWriter.Write(item.Text);
+                        htmlRetVal.Append(item.Text);
+                    }
+                }
+
+                //fmtWriter.WriteLine(htmlbottom);
+                htmlRetVal.AppendLine(htmlbottom);
+
+
+                //}
+
+
+
+                //Sql120ScriptGenerator scrGen = new Sql120ScriptGenerator();
+
+                //string formattedSQL = null;
+                //scrGen.GenerateScript(tree, out formattedSQL);
+
+                //string ss = formattedSQL.ToString();
+                //using (StreamWriter sw = new StreamWriter(@"C:\test_out.sql"))
+                //{
+                //    sw.WriteLine(ss);
+
+
+                //}
+
+
+                //Console.Write(formattedSQL);
+
+
+
+            }
+
+            //Console.WriteLine("Line count: " + linecount.ToString());
+
+            return htmlRetVal.ToString();
+        }
+
+
+
+        public string ParseWhiteSpace(string ws)
+        {
+
+            if (ws == null || "".Equals(ws) || "\r\n".Equals(ws))
+            {
+                return ws;
+            }
+
+            ws = ws.Replace("\t", "    ");
+            StringBuilder retval = new StringBuilder();
+
+            for (int i = 0; i < ws.Length; i++)
+            {
+                retval.Append("&nbsp;");
+            }
+
+            return retval.ToString();
+        }
+    }
+}

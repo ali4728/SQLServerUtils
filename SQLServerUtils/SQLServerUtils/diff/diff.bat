@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\WinMerge\WinMergeU.exe" "C:\temp\diff\left.sql" "C:\temp\diff\right.sql"
