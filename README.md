@@ -25,6 +25,7 @@ The project has two seperate parts!
 
 ## Setup
 Download binaries from **~\bin\debug** folder
+Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
 Update path in **SQLServerUtils.exe.config** file for below items 
   ```
   <add key="ServerListFilePath" value="C:\temp\serverlist.txt" />
@@ -36,7 +37,9 @@ Update path in **SQLServerUtils.exe.config** file for below items
  # DIFF
  Diff functionality is useful if you would like to compare stored proc (or other objects) in **test** to stored proc in **prod** environments quickly.
  
- Update SQLServerUtils/diff/diff.bat if you would like to use WinMerge for **Diff** functionality.
+ Update **~\SQLServerUtils\diff\diff.bat** if you would like to use WinMerge for **Diff** functionality.
+ 
+ Double click to run **~\bin\Debug\SQLServerUtils.exe** program
  
  
     
