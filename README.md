@@ -1,12 +1,22 @@
 # SQLServerUtils
-Browse and Search SQL Server Ojbects quickly on a Wndows PC using your browser localhost:8084
+Browse and Search SQL Server Ojbects quickly on a Wndows PC using your browser. It is a fork from [MsSqlDependencyBrowser](https://github.com/usharik/MsSqlDependencyBrowser).
 
+# Functionality
+- Connect to SQL Server machines and databases quickly by selecting from drop down lists
+- Realtime filter of objects (tables, stored proc, view etc.) with a few key strokes
+- Single click preview of object text (sp,view etc.)
+- Search stored procedure code in multiple servers and multiple databases at once/parallel (use threading)
+- Search column names, table names and other object types.
+- Quickly Diff between prod and test object (sp, view etc) using WinMerge in the backend
+
+
+# Implementation Details
 Project is forked from https://github.com/usharik/MsSqlDependencyBrowser. Original project was written in Angular js and I replaced it with Vue.js and also replaced bunch of C# logic to fit my needs.
 
 
 The project has two seperate parts!
-- C# console application used as a simple webapp served at **localhost:8084**
-- Vue js web application used to develop index.html and javascript components.
+- C# console application used as a simple webapp server, served at **localhost:8084**
+- Vue js web application used to develop javascript, css components.
 - A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
 
 
