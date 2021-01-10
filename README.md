@@ -19,8 +19,7 @@ The project has two seperate parts!
 - Vue js web application used to develop javascript, css and html components.
 - A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
 
-
-Example Screen Print
+# Screen Prints
 ![alt text](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
 
 
