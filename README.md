@@ -19,12 +19,6 @@ The project has two seperate parts!
 - Vue js web application used to develop javascript, css and html components.
 - A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
 
-# Screen Prints
-![MainPage](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
-
-
-![Diff](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Diff.PNG)
-
 # Setup
 Download binaries from **~\bin\debug** folder
 Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
@@ -36,6 +30,7 @@ Update path in **SQLServerUtils.exe.config** file for below items
     
  **serverlist.txt** file contains list of sql server machine names. One server name on each line.
  
+ 
  # Diff
  Diff functionality is useful if you would like to compare stored proc (or other objects) in **test** to stored proc in **prod** environments quickly.
  
@@ -44,4 +39,10 @@ Update path in **SQLServerUtils.exe.config** file for below items
  Double click to run **~\bin\Debug\SQLServerUtils.exe** program
  
  
-    
+# Screen Prints
+![MainPage](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
+
+![Diff](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Diff.PNG)
+
+![Search](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Search.PNG)
+
