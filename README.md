@@ -16,7 +16,7 @@ Project is forked from https://github.com/usharik/MsSqlDependencyBrowser. Origin
 
 The project has two seperate parts!
 - C# console application used as a simple webapp server, served at **localhost:8084**
-- Vue js web application used to develop javascript, css components.
+- Vue js web application used to develop javascript, css and html components.
 - A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
 
 
