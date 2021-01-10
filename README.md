@@ -23,7 +23,7 @@ The project has two seperate parts!
 ![alt text](https://github.com/ali4728/SQLServerUtils/blob/master/Utils/img/Navigate_Stored_Procs.PNG)
 
 
-## Setup
+# Setup
 Download binaries from **~\bin\debug** folder
 Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
 Update path in **SQLServerUtils.exe.config** file for below items 
@@ -34,7 +34,7 @@ Update path in **SQLServerUtils.exe.config** file for below items
     
  **serverlist.txt file** contains list of sql server machine names. One server name in each line.
  
- # DIFF
+ # Diff
  Diff functionality is useful if you would like to compare stored proc (or other objects) in **test** to stored proc in **prod** environments quickly.
  
  Update **~\SQLServerUtils\diff\diff.bat** if you would like to use WinMerge for **Diff** functionality.
