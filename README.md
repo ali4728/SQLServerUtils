@@ -32,7 +32,7 @@ Update path in **SQLServerUtils.exe.config** file for below items
   <add key="DiffPath" value="C:\temp\diff" />
   ```
     
- **serverlist.txt** file contains list of sql server machine names. One server name in each line.
+ **serverlist.txt** file contains list of sql server machine names. One server name on each line.
  
  # Diff
  Diff functionality is useful if you would like to compare stored proc (or other objects) in **test** to stored proc in **prod** environments quickly.
