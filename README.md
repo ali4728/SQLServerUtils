@@ -1,5 +1,5 @@
 # SQLServerUtils
-Browse and Search SQL Server Ojbects quickly on a Wndows PC using your browser. It is a fork from [MsSqlDependencyBrowser](https://github.com/usharik/MsSqlDependencyBrowser).
+Browse and Search SQL Server Ojbects quickly on a Windows PC using your browser. It is a fork from [MsSqlDependencyBrowser](https://github.com/usharik/MsSqlDependencyBrowser).
 
 # Functionality
 - Connect to SQL Server machines and databases quickly by selecting from drop down lists
