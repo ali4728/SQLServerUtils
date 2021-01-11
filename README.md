@@ -17,12 +17,14 @@ Project is forked from https://github.com/usharik/MsSqlDependencyBrowser. Origin
 The project has two seperate parts!
 - C# console application used as a simple webapp server, served at **localhost:8084**
 - Vue js web application used to develop javascript, css and html components.
-- A powershell script (in Utils folder) is used to copy vue compiled js,css and html into c# console app
+- A powershell script (in Utils folder) is used to copy vue compiled js, css and html into c# console app
 
 # Setup
-Download binaries from **~\bin\debug** folder
-Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
-Update path in **SQLServerUtils.exe.config** file for below items 
+- Download binaries from **~\bin\debug** folder
+- Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
+- Update path in **SQLServerUtils.exe.config** file for below items
+- Double click to run **~\bin\Debug\SQLServerUtils.exe** program
+
   ```
   <add key="ServerListFilePath" value="C:\temp\serverlist.txt" />
   <add key="DiffPath" value="C:\temp\diff" />
@@ -36,7 +38,6 @@ Update path in **SQLServerUtils.exe.config** file for below items
  
  Update **~\SQLServerUtils\diff\diff.bat** if you would like to use WinMerge for **Diff** functionality.
  
- Double click to run **~\bin\Debug\SQLServerUtils.exe** program
  
  
 # Screen Prints
