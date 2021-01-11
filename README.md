@@ -23,14 +23,14 @@ The project has two seperate parts!
 - Download binaries from **~\bin\debug** folder
 - Copy **~\SQLServerUtils\Web** and **~\SQLServerUtils\Diff** folders and their contents into bin folder
 - Update path in **SQLServerUtils.exe.config** file for below items
-- Double click to run **~\bin\Debug\SQLServerUtils.exe** program
 
   ```
   <add key="ServerListFilePath" value="C:\temp\serverlist.txt" />
   <add key="DiffPath" value="C:\temp\diff" />
   ```
-    
- **serverlist.txt** file contains list of sql server machine names. One server name on each line.
+- Double click to run **~\bin\Debug\SQLServerUtils.exe** program 
+
+**serverlist.txt** file contains list of sql server machine names. One server name on each line.
  
  
  # Diff
