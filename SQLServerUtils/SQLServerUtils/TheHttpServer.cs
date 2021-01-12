@@ -169,7 +169,7 @@ namespace SQLServerUtils
 
                 DateTime now = DateTime.Now;
                 result = "Diff is triggrered: " + now.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                // TODO get obj text and write to file for left and right and then kick of batch file
+               
                 sendStaticResource(context.Response, result, "text/html");
 
             }
@@ -187,7 +187,7 @@ namespace SQLServerUtils
         {
             try
             {
-                // TO DO 
+               
                 ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
                 SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
 
@@ -229,53 +229,25 @@ namespace SQLServerUtils
                 if (searchSP.Equals("true"))
                 {
                     objTypeList.Add("sp"); 
-
-                    //tempList = msSqlRequestService.requestSysObjectInfo(spSearchText, connParams.server, connParams.database, "sp", searchAllDbs, searchAllServers);
-                    //if (tempList.Count > 0)
-                    //{
-                    //    sl.AddRange(tempList);
-                    //}
-                    //tempList.Clear();
+                   
                 }
 
                 if (searchTable.Equals("true"))
                 {
-                    objTypeList.Add("table");
-
-                    //tempList = msSqlRequestService.requestSysObjectInfo(spSearchText, connParams.server, connParams.database, "table", searchAllDbs, searchAllServers);
-                    //if (tempList.Count > 0)
-                    //{
-                    //    sl.AddRange(tempList);
-                    //}
-                    //tempList.Clear();
+                    objTypeList.Add("table");                  
                 }
 
                 if (searchColumn.Equals("true"))
                 {
                     objTypeList.Add("column");
-
-                    //tempList = msSqlRequestService.requestSysObjectInfo(spSearchText, connParams.server, connParams.database, "column", searchAllDbs, searchAllServers);
-                    //if (tempList.Count > 0)
-                    //{
-                    //    sl.AddRange(tempList);
-                    //}
-                    //tempList.Clear();
-                }
+                                    }
 
                 if (searchView.Equals("true"))
                 {
                     objTypeList.Add("view");
-
-                    //tempList = msSqlRequestService.requestSysObjectInfo(spSearchText, connParams.server, connParams.database, "view", searchAllDbs, searchAllServers);
-                    //if (tempList.Count > 0)
-                    //{
-                    //    sl.AddRange(tempList);
-                    //}
-                    //tempList.Clear();
+               
                 }
 
-
-                //connParams.server, connParams.database
 
                 if (objTypeList.Count > 0 && serverList.Count > 0 && !string.IsNullOrEmpty(connParams.server) && !string.IsNullOrEmpty(connParams.database))
                 {

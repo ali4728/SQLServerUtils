@@ -37,75 +37,57 @@ namespace SQLServerUtils
 
             StringBuilder sb = new StringBuilder();
 
-            Table aTable = dbObjects.Tables[tableName.ToLower()];
+            //Table aTable = dbObjects.Tables[tableName.ToLower()];
 
-            if (aTable != null)
+            foreach (Table aTable in dbObjects.Tables)
             {
-                /* Generating IF EXISTS and DROP command for tables */
-                StringCollection tableScripts = aTable.Script(scriptOptions);
-                foreach (string script in tableScripts)
-                    Console.WriteLine(script);
 
-                /* Generating CREATE TABLE command */
-                tableScripts = aTable.Script();
-                foreach (string script in tableScripts)
+                if (aTable.Name.ToLower().Equals(tableName.ToLower()))
                 {
-                    Console.WriteLine(script);
-                    sb.AppendLine(script);
-                }
+                    /* Generating IF EXISTS and DROP command for tables */
+                    StringCollection tableScripts = aTable.Script(scriptOptions);
+                    foreach (string script in tableScripts)
+                        Console.WriteLine(script);
 
-
-                IndexCollection indexCol = aTable.Indexes;
-                foreach (Index myIndex in aTable.Indexes)
-                {
-                    /* Generating IF EXISTS and DROP command for table indexes */
-                    StringCollection indexScripts = myIndex.Script(scriptOptions);
-                    foreach (string script in indexScripts)
+                    /* Generating CREATE TABLE command */
+                    tableScripts = aTable.Script();
+                    foreach (string script in tableScripts)
                     {
                         Console.WriteLine(script);
                         sb.AppendLine(script);
                     }
 
-                    /* Generating CREATE INDEX command for table indexes */
-                    indexScripts = myIndex.Script();
-                    foreach (string script in indexScripts)
+
+                    IndexCollection indexCol = aTable.Indexes;
+                    foreach (Index myIndex in aTable.Indexes)
                     {
-                        Console.WriteLine(script);
-                        sb.AppendLine(script);
+                        /* Generating IF EXISTS and DROP command for table indexes */
+                        StringCollection indexScripts = myIndex.Script(scriptOptions);
+                        foreach (string script in indexScripts)
+                        {
+                            Console.WriteLine(script);
+                            sb.AppendLine(script);
+                        }
+
+                        /* Generating CREATE INDEX command for table indexes */
+                        indexScripts = myIndex.Script();
+                        foreach (string script in indexScripts)
+                        {
+                            Console.WriteLine(script);
+                            sb.AppendLine(script);
+                        }
                     }
-                }
+                }                
+
             }
-            else
+
+
+            if (sb.ToString().Length < 1)
             {
-                foreach (Table tblItem in dbObjects.Tables)
-                {
-                    if (tblItem.Name.ToLower().Equals(tableName.ToLower()))
-                    {
-                        Console.WriteLine("table found: " + tableName.ToLower() + " but was not able to selected");
-                    }
-                    else
-                    {
-                        Console.WriteLine(tableName + " not found!!");
-                    }
-                }
                 sb.AppendLine(tableName + " not found");
             }
 
 
-            //Scripter scripter = new Scripter(myServer);
-            //Database red = myServer.Databases["red"];
-
-            //Urn[] DatabaseURNs = new Urn[] { red.Urn };
-            //StringCollection scriptCollection = scripter.Script(DatabaseURNs);
-
-
-
-            //foreach (string script in scriptCollection)
-            //{
-            //    sb.Append(script);
-            //}
-
-            //Console.WriteLine(sb.ToString());
 
             return sb.ToString();
           
