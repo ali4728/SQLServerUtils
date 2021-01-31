@@ -96,6 +96,40 @@ namespace SQLServerUtils
 
 
 
+        public static string ScriptSynonym(string servername, string databasename, string synonymName)
+        {
+            Server aServer = new Server(servername);
+            Database dbObjects = aServer.Databases[databasename];
+            
+            ScriptingOptions scriptOptions = new ScriptingOptions();
+            scriptOptions.ScriptDrops = true;
+            scriptOptions.IncludeIfNotExists = true;
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (Synonym aSyn in dbObjects.Synonyms)
+            {
+                if (aSyn.Name.ToLower().Equals(synonymName.ToLower()))
+                {                                        
+                    StringCollection objScripts = aSyn.Script(scriptOptions);
+                    objScripts = aSyn.Script();
+
+                    foreach (string script in objScripts)
+                    {
+                        //Console.WriteLine(script);
+                        sb.AppendLine(script);
+                    }
+                }
+            }
+
+            if (sb.ToString().Length < 1)
+            {
+                sb.AppendLine(synonymName + " not found");
+            }
+
+            return sb.ToString();
+
+        }
 
 
 

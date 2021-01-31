@@ -46,9 +46,12 @@ namespace SQLServerUtils
         HashSet<string> keywords2;
         XslCompiledTransform xslTranCompiler;
         string connectionString;
-
+        string server;
+        string database;
         public SqlRequestService(string server, string database)
-        {           
+        {
+            this.server = server;
+            this.database = database;
             string tmpConnectionString = string.Format(Resources.connectionStringTemplate, server, database);
             try
             {
@@ -129,6 +132,11 @@ namespace SQLServerUtils
                         var htmlDest = new StringBuilder();
                         xslTranCompiler.Transform(xmlSource, XmlWriter.Create(htmlDest));
                         return htmlDest.ToString();
+                    } else if (dbObject.type_desc == "SYNONYM")
+                    {
+                       // Console.WriteLine(dbObject.object_text);
+                        return FileUtils.ScriptSynonym(this.server, this.database, objectName);                        
+                        
                     }
 
                     if (objectName != "")
