@@ -111,7 +111,7 @@
                                                 <td colspan="3">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text">Object Filter</span>
-                                                        <input type="text" class="form-control" v-model="objFilter" v-on:keyup="filterCurrentObjects">
+                                                        <input id="input_box_obj_filter" type="text" class="form-control" v-model="objFilter" v-on:keyup="filterCurrentObjects">
                                                     </div>
                                                 </td>
                                                 
@@ -329,6 +329,12 @@ export default {
                     this.diffMessage = error;
                     this.progressFlag = false;
                 });
+        },
+
+        selectElementById: function(elementId){
+            const myElement = document.getElementById(elementId);
+            myElement.focus();
+            myElement.select();
         },
 
 
@@ -722,10 +728,47 @@ export default {
             } 
            
             event.preventDefault();
-        })
-        
+        });
+
+
+        this._keyListener = function(e) {
+             console.log(e.key);
+              
+            if ((e.key === "s" || e.key === "S") && (e.ctrlKey && e.altKey)) {
+                e.preventDefault();
+                // present "Save Page" from getting triggered.
+                console.log('shortkey pressed: Ctrl + Shift + v');
+                this.selectSPType();
+                this.selectElementById('input_box_obj_filter');
+            }
+            else if ((e.key === "t" || e.key === "T") && (e.ctrlKey && e.altKey)) {
+                e.preventDefault();
+                // present "Save Page" from getting triggered.
+                console.log('shortkey pressed: Ctrl + Alt + T');
+                this.selectTableType();
+                this.selectElementById('input_box_obj_filter');
+            }
+            else if ((e.key === "0") && (e.ctrlKey && e.altKey)) {
+                e.preventDefault();
+                
+                console.log('shortkey pressed: Ctrl + Alt + 0');
+                this.objFilter = '';
+                this.selectElementById('input_box_obj_filter');
+            }
+            else if ((e.key === "c" || e.key === "C") && (e.ctrlKey && e.altKey)) {
+                e.preventDefault();
+                //updateClip
+                console.log('shortkey pressed: Ctrl + Alt + c');
+                 this.updateClip();
+            }
+        };
+
+         document.addEventListener('keydown', this._keyListener.bind(this));
 
       
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this._keyListener);
     },
     watch: {
       $route(to, from, next) {
