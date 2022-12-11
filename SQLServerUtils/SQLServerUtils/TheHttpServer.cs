@@ -145,17 +145,42 @@ namespace SQLServerUtils
                 
                 ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
                 SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
-
+                
                 string result = "";
+
+                string leftIsFileOnDisk = context.Request.QueryString["leftIsFileOnDisk"];
+                string rightIsFileOnDisk = context.Request.QueryString["rightIsFileOnDisk"];
+
+                string objectType = context.Request.QueryString["objectType"];
 
                 string diffLeft = context.Request.QueryString["diffLeft"];
                 string diffRight = context.Request.QueryString["diffRight"];                
+                             
 
-                string[] diffLeftAry = diffLeft.Split('.');
-                string[] diffRightAry = diffRight.Split('.');
+                string diffLeftText = "";
+                string diffRightText = "";
 
-                string diffLeftText = msSqlRequestService.requestDiff(diffLeftAry[0], diffLeftAry[1], diffLeftAry[2], diffLeftAry[3], diffLeftAry[4]);
-                string diffRightText = msSqlRequestService.requestDiff(diffRightAry[0], diffRightAry[1], diffRightAry[2], diffRightAry[3], diffRightAry[4]);
+                if (leftIsFileOnDisk.Equals("true"))
+                {
+                    diffLeftText = FileUtils.ReadFileContent(diffLeft);
+                }
+                else 
+                {
+                    string[] diffLeftAry = diffLeft.Split('.');
+                    diffLeftText = msSqlRequestService.requestDiff(objectType, diffLeftAry[0], diffLeftAry[1], diffLeftAry[2], diffLeftAry[3]);
+                }
+
+
+                if (rightIsFileOnDisk.Equals("true"))
+                {
+                    diffRightText = FileUtils.ReadFileContent(diffRight);
+                }
+                else
+                {
+                    string[] diffRightAry = diffRight.Split('.');
+                    diffRightText = msSqlRequestService.requestDiff(objectType, diffRightAry[0], diffRightAry[1], diffRightAry[2], diffRightAry[3]);
+                }
+                
 
 
                 string DiffPath = ConfigurationManager.AppSettings["DiffPath"];

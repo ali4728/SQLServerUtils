@@ -11,8 +11,10 @@
                                 <!-- Server: {{server}} -->
                                  <button @click="selectTableType" type="button" class="btn btn-secondary btn-sm">tbl</button> &nbsp;
                                  <button @click="selectSPType" type="button" class="btn btn-secondary btn-sm">sp</button> &nbsp;
-                                 <button @click.stop.prevent="updateClip" type="button" class="btn btn-secondary btn-sm">cb</button>
+                                 <button @click.stop.prevent="updateClip('#idclipbrd')" type="button" class="btn btn-secondary btn-sm">cb</button> &nbsp;
+                                 <button @click.stop.prevent="updateClip('#idclipbrdSelectStar')" type="button" class="btn btn-secondary btn-sm">s*</button> &nbsp;
                                   <input type="hidden" id="idclipbrd" :value=" '[' + this.server + '].' + this.database + '.' + this.selectedSechemaName + '.' + this.selectedObjectName">
+                                  <input type="hidden" id="idclipbrdSelectStar" :value=" 'SELECT TOP 100 * FROM '  + this.database + '.' + this.selectedSechemaName + '.' + this.selectedObjectName">
                             </td>
                             <td style="padding-left: 12px;">                        
                                  <div v-show="progressFlag" class="spinner-border text-primary spinner-border-sm" role="status">
@@ -140,7 +142,7 @@
                         </b-tab>
 
                         <b-tab title="SQL Editor">
-                            <span>Enter AdHoc SQL Query Below:</span>
+                            <span>Enter AdHoc SQL Query below:</span>
 
                             <br />
                             <textarea rows="10" cols="80" v-model="sqlQuery" placeholder="type sql command here"></textarea>
@@ -201,7 +203,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="input-group mb-3">        
+                                        <div class="input-group mb-3"> 
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" v-model="leftIsFileOnDisk" true-value="true" false-value="false"> <label class="form-check-label" >fl</label></div>  &nbsp;
                                              <span class="input-group-text">Left</span>                            
                                             <input type="text" class="form-control" v-model="diffLeft" size="140">
                                         </div>                         
@@ -211,6 +214,7 @@
                                 <tr>
                                     <td>
                                         <div class="input-group mb-3">    
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" v-model="rightIsFileOnDisk" true-value="true" false-value="false"> <label class="form-check-label" >fl</label></div>  &nbsp;                                           
                                              <span class="input-group-text">Right</span>                                    
                                             <input type="text" class="form-control" v-model="diffRight" size="140">
                                         </div>                                                                 
@@ -291,6 +295,8 @@ export default {
       diffLeft: '',  
       diffRight: '',
       diffMessage: '',
+      leftIsFileOnDisk: 'false',
+      rightIsFileOnDisk: 'false',
 
     }
   },
@@ -316,17 +322,18 @@ export default {
         },
 
 
-        fnDiffCompare: function() {
+        fnDiffCompare: function() {           
+
             this.progressFlag = true;
             
-            axios.post('/diff?diffLeft=' + this.objectType + '.' + this.diffLeft + '&diffRight=' + this.objectType + '.'  + this.diffRight, { 'server': this.server, 'database': this.database })
+            axios.post('/diff?objectType='+ this.objectType + '&diffLeft=' + this.diffLeft + '&diffRight=' + this.diffRight + '&leftIsFileOnDisk=' + this.leftIsFileOnDisk + '&rightIsFileOnDisk=' + this.rightIsFileOnDisk , { 'server': this.server, 'database': this.database })
                 .then((response) => {
                     this.diffMessage = response.data;
                     this.progressFlag = false;
                 })
-                .catch(function (error) {
-                    console.log(error);
-                    this.diffMessage = error;
+                 .catch((error) => {
+                    console.log(error);                    
+                    this.diffMessage = error;                    
                     this.progressFlag = false;
                 });
         },
@@ -338,10 +345,10 @@ export default {
         },
 
 
-        updateClip: function () {  
+        updateClip: function (idclipbrd) {  
             //this.progressFlag = !this.progressFlag;             
             
-            let clipElem = document.querySelector('#idclipbrd')
+            let clipElem = document.querySelector(idclipbrd) //'#idclipbrd'
             clipElem.setAttribute('type', 'text') 
             clipElem.select()
 
@@ -670,7 +677,7 @@ export default {
             this.progressFlag = true;
 
             this.sqlQueryResponse = '';
-            axios.post('/querydatabase?sqlquery=' + this.sqlQuery, { 'server': this.server, 'database': this.database })
+            axios.post('/querydatabase?sqlquery=' + encodeURIComponent(this.sqlQuery), { 'server': this.server, 'database': this.database })
                 .then((response) => {
                     this.sqlQueryResponse = response.data;
                     this.progressFlag = false;

@@ -131,7 +131,12 @@ namespace SQLServerUtils
                         xmlSource.LoadXml(String.Join("", objXml));
                         var htmlDest = new StringBuilder();
                         xslTranCompiler.Transform(xmlSource, XmlWriter.Create(htmlDest));
-                        return htmlDest.ToString();
+
+                        string idexinfo = FileUtils.ListTableIndexes(this.server, this.database, objectName);
+                        string idxhtml = $"<div>{idexinfo}</div>";
+                        
+                        
+                        return (idxhtml + htmlDest.ToString());
                     } else if (dbObject.type_desc == "SYNONYM")
                     {
                        // Console.WriteLine(dbObject.object_text);
@@ -159,7 +164,7 @@ namespace SQLServerUtils
                         //return commentAndStringProcessor.Process(dbObject.object_text);
 
                         TSql_Parser tparser = new TSql_Parser();
-                        return tparser.Execute(dbObject.object_text);
+                        return tparser.ExecuteTable(dbObject.object_text);
                     }
                 }
                 return "unknown type of object";
@@ -456,7 +461,9 @@ namespace SQLServerUtils
         public List<string> requestSysObjectInfoConcurrent(string searchString, List<string> serverList, List<string> databaseList,  List<string> objTypeList)
         {
             List<string> retList = new List<string>();
-            
+            List<string> retListError = new List<string>();
+            List<string> retListAll = new List<string>();
+
             foreach (string server in serverList)
             {                
 
@@ -488,13 +495,28 @@ namespace SQLServerUtils
                 foreach (object ob in allObjList)
                 {
                     List<string> tmp = (List<string>) ob;
-                    retList.AddRange(tmp);
+                    foreach (string tmpItem in tmp)
+                    {
+                        if (tmpItem.Contains("dbObjectType ALL"))
+                        {
+                            retListError.Add(tmpItem);
+                        }
+                        else
+                        {
+                            retList.Add(tmpItem);
+                        }
+                    }                    
                 }
+
+                retListAll.AddRange(retList);
+                retListAll.AddRange(retListError);
+
+
 
 
             }
-
-            return retList;
+            //sort before sending
+            return retListAll;
         }
 
         public void SearchDB(string searchString, string server, string database, List<string> objTypeList, ref List<string> listofObjects)
@@ -610,6 +632,7 @@ namespace SQLServerUtils
 
                     if (dbObject.type_desc == "USER_TABLE")
                     {
+                        var xxx = FileUtils.ListTableIndexes(server, database, objectName);
                         return FileUtils.ScriptTable(server, database, objectName);
                     }
 
