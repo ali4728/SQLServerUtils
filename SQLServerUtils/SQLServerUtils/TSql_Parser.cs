@@ -42,8 +42,8 @@ namespace SQLServerUtils
             
 
             IList<ParseError> errors = null;
-            List<string> kw = new List<string> { "alter", "quoted_identifier", "ansi_nulls", "bulk", "go", "use", "select", "from", "where", "order", "group", "by", "insert", "update", "delete", "merge", "into", "having", "exec", "with", "declare", "create", "function", "procedure", "return", "returns", "begin", "end", "as", "if", "while", "for", "set", "try", "catch", "drop", "table", "view", "union", "all", "case", "then", "when", "cross", "apply", "outer", "inner", "left", "join", "and", "or", "on", "else", "raiserror", "throw", "tran", "commit", "rollback", "pivot", "unpivot", "for", "cursor", "open", "is", "in", "not", "null", "over", "partition", "using", "values", "varchar", "tinyint", "integer", "int", "bigint", "sysname", "date", "datetime", "datetime2", "bit", "numeric", "char", "decimal", "varbinary", "execute", "fetch", "nvarchar", "revert", "nocount", "exists", "uniqueidentifier", "output", "index", "raiserror", "print", "on", "off", "nolock", "open", "close", "deallocate", "goto", "image", "ntext", "top", "truncate" };
-            List<string> kw2 = new List<string> { "sum", "avg", "min", "max", "count", "row_number", "rank", "isnull", "coalesce", "nullif", "getdate", "getutcdate", "getdate", "day", "month", "year", "len", "trim", "stuff", "datepart", "eomonth", "suser_sname", "cast", "convert", "db_name", "dateadd", "datediff" };
+            List<string> kw = new List<string> { "xml", "alter", "quoted_identifier", "ansi_nulls", "bulk", "go", "use", "select", "from", "where", "order", "group", "by", "insert", "update", "delete", "merge", "into", "having", "exec", "with", "declare", "create", "function", "procedure", "return", "returns", "begin", "end", "as", "if", "while", "for", "set", "try", "catch", "drop", "table", "view", "union", "all", "case", "then", "when", "cross", "apply", "outer", "inner", "left", "join", "and", "or", "on", "else", "raiserror", "throw", "tran", "commit", "rollback", "pivot", "unpivot", "for", "cursor", "open", "is", "in", "not", "null", "over", "partition", "using", "values", "varchar", "tinyint", "integer", "int", "bigint", "sysname", "date", "datetime", "datetime2", "bit", "numeric", "char", "decimal", "varbinary", "execute", "fetch", "nvarchar", "revert", "nocount", "exists", "uniqueidentifier", "output", "index", "raiserror", "print", "on", "off", "nolock", "open", "close", "deallocate", "goto", "image", "ntext", "top", "truncate" };
+            List<string> kw2 = new List<string> { "identity","sum", "avg", "min", "max", "count", "row_number", "rank", "isnull", "coalesce", "nullif", "getdate", "getutcdate", "getdate", "day", "month", "year", "len", "trim", "stuff", "datepart", "eomonth", "suser_sname", "cast", "convert", "db_name", "dateadd", "datediff" };
             List<string> kw3 = new List<string> { "asciistringliteral" };
             
             using (StringReader rdr = new StringReader(contents))
@@ -206,7 +206,7 @@ namespace SQLServerUtils
 
             IList<ParseError> errors = null;
             List<string> kw = new List<string> { "alter", "quoted_identifier", "ansi_nulls", "bulk", "go", "use", "select", "from", "where", "order", "group", "by", "insert", "update", "delete", "merge", "into", "having", "exec", "with", "declare", "create", "function", "procedure", "return", "returns", "begin", "end", "as", "if", "while", "for", "set", "try", "catch", "drop", "table", "view", "union", "all", "case", "then", "when", "cross", "apply", "outer", "inner", "left", "join", "and", "or", "on", "else", "raiserror", "throw", "tran", "commit", "rollback", "pivot", "unpivot", "for", "cursor", "open", "is", "in", "not", "null", "over", "partition", "using", "values", "varchar", "tinyint", "integer", "int", "bigint", "sysname", "date", "datetime", "datetime2", "bit", "numeric", "char", "decimal", "varbinary", "execute", "fetch", "nvarchar", "revert", "nocount", "exists", "uniqueidentifier", "output", "index", "raiserror", "print", "on", "off", "nolock", "open", "close", "deallocate", "goto", "image", "ntext", "top", "truncate" };
-            List<string> kw2 = new List<string> { "sum", "avg", "min", "max", "count", "row_number", "rank", "isnull", "coalesce", "nullif", "getdate", "getutcdate", "getdate", "day", "month", "year", "len", "trim", "stuff", "datepart", "eomonth", "suser_sname", "cast", "convert", "db_name", "dateadd", "datediff" };
+            List<string> kw2 = new List<string> { "sum", "avg", "min", "max", "count", "row_number", "rank", "isnull", "coalesce", "nullif", "getdate", "getutcdate", "getdate", "day", "month", "year", "len", "trim", "stuff", "datepart", "eomonth", "suser_sname", "cast", "convert", "db_name", "dateadd", "datediff", "@@rowcount" };
             List<string> kw3 = new List<string> { "asciistringliteral" };
 
             using (StringReader rdr = new StringReader(contents))
@@ -248,8 +248,6 @@ namespace SQLServerUtils
                     string origstr = "QWERTYUIO8";
 
 
-
-
                     if (item.Text != null)
                     {
                         txt = item.Text.Trim().ToLower();
@@ -268,10 +266,35 @@ namespace SQLServerUtils
                         htmlRetVal.Append(fmt.ToUpper());
                     }
                     else if (kw3.Contains(tt) && !txt.Equals("QWERTYUIO8"))
-                    {
-                        string fmt = string.Format(red, origstr);
-                        htmlRetVal.Append(fmt);
-                    }
+                    {                        
+                        
+                        string[] aryAsciiString = item.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+                        // print new line inside asciistringliteral
+                        if (aryAsciiString.Length > 1)
+                        {
+                            for (int i = 0; i < aryAsciiString.Length; i++)
+                            {
+                                string itemAscii = aryAsciiString[i];
+                                if (i > 0) //skip printing new line for the first element
+                                {
+                                    linecount++;
+                                    lctr++;
+                                    htmlRetVal.AppendLine("</td></tr><tr><td class=\"blob-num\" data-line-number=\"" + lctr.ToString() + "\"></td><td class=\"blob-code blob-code-inner\">");
+                                }
+
+                                string fmt = string.Format(red, itemAscii);
+                                htmlRetVal.Append(fmt);
+                            }
+                        }
+                        else
+                        {
+                            string fmt = string.Format(red, origstr);
+                            htmlRetVal.Append(fmt);
+                        }
+                        
+                      
+                    }                    
                     else if (item.TokenType == TSqlTokenType.UnicodeStringLiteral && !txt.Equals("QWERTYUIO8"))
                     {
                         string fmt = string.Format(red, origstr);
@@ -344,7 +367,7 @@ namespace SQLServerUtils
 
                     }
                     else
-                    {
+                    {                       
                         htmlRetVal.Append(item.Text);
                     }
                 }

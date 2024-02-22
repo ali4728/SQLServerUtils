@@ -19,7 +19,7 @@ namespace SQLServerUtils {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,7 +61,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (function(e){function t(t){for(var a,i,o=t[0],c=t[1],l=t[2],d=0,v=[];d&lt;o.length;d++)i=o[d],Object.prototype.hasOwnProperty.call(s,i)&amp;&amp;s[i]&amp;&amp;v.push(s[i][0]),s[i]=0;for(a in c)Object.prototype.hasOwnProperty.call(c,a)&amp;&amp;(e[a]=c[a]);u&amp;&amp;u(t);while(v.length)v.shift()();return n.push.apply(n,l||[]),r()}function r(){for(var e,t=0;t&lt;n.length;t++){for(var r=n[t],a=!0,o=1;o&lt;r.length;o++){var c=r[o];0!==s[c]&amp;&amp;(a=!1)}a&amp;&amp;(n.splice(t--,1),e=i(i.s=r[0]))}return e}var a={},s={app:0},n=[];function i(t){if(a[t])return a[t].ex [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to (function(e){function t(t){for(var a,n,c=t[0],o=t[1],l=t[2],d=0,u=[];d&lt;c.length;d++)n=c[d],Object.prototype.hasOwnProperty.call(r,n)&amp;&amp;r[n]&amp;&amp;u.push(r[n][0]),r[n]=0;for(a in o)Object.prototype.hasOwnProperty.call(o,a)&amp;&amp;(e[a]=o[a]);p&amp;&amp;p(t);while(u.length)u.shift()();return i.push.apply(i,l||[]),s()}function s(){for(var e,t=0;t&lt;i.length;t++){for(var s=i[t],a=!0,c=1;c&lt;s.length;c++){var o=s[c];0!==r[o]&amp;&amp;(a=!1)}a&amp;&amp;(i.splice(t--,1),e=n(n.s=s[0]))}return e}var a={},r={app:0},i=[];function n(t){if(a[t])return a[t].ex [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string app_js {
             get {
@@ -70,7 +70,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;version&quot;:3,&quot;sources&quot;:[&quot;webpack:///webpack/bootstrap&quot;,&quot;webpack:///./src/App.vue?f870&quot;,&quot;webpack:///./src/App.vue?d49c&quot;,&quot;webpack:///./src/components/SqlMain.vue?f233&quot;,&quot;webpack:///src/components/SqlMain.vue&quot;,&quot;webpack:///./src/components/SqlMain.vue?ecc7&quot;,&quot;webpack:///./src/components/SqlMain.vue?ee5d&quot;,&quot;webpack:///src/App.vue&quot;,&quot;webpack:///./src/App.vue?4b00&quot;,&quot;webpack:///./src/App.vue?bff9&quot;,&quot;webpack:///./src/main.js&quot;,&quot;webpack:///./src/components/SqlMain.vue?7c44&quot;],&quot;names&quot;:[&quot;webpackJsonpCallback&quot;,&quot;data&quot;,&quot;moduleId [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;version&quot;:3,&quot;sources&quot;:[&quot;webpack:///webpack/bootstrap&quot;,&quot;webpack:///./src/App.vue?4241&quot;,&quot;webpack:///./src/components/SqlMain.vue?3ba3&quot;,&quot;webpack:///./src/components/SqlMain.vue?fbef&quot;,&quot;webpack:///./src/components/SqlMain.vue?ee5d&quot;,&quot;webpack:///./src/router.js&quot;,&quot;webpack:///./src/App.vue?b9d2&quot;,&quot;webpack:///src/App.vue&quot;,&quot;webpack:///./src/App.vue?1160&quot;,&quot;webpack:///./src/App.vue?bff9&quot;,&quot;webpack:///./src/main.js&quot;,&quot;webpack:///./src/components/SqlMain.vue?30d2&quot;,&quot;webpack:///src/components/SqlMain.vue&quot;],&quot;names&quot;:[&quot;webpackJs [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string app_map {
             get {
@@ -98,20 +98,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///&lt;html lang=en&gt;
-        ///&lt;head&gt;
-        ///    &lt;meta charset=utf-8&gt;
-        ///    &lt;meta http-equiv=X-UA-Compatible content=&quot;IE=edge&quot;&gt;
-        ///    &lt;meta name=viewport content=&quot;width=device-width,initial-scale=1&quot;&gt;
-        ///    &lt;link rel=icon href=/favicon.ico&gt;
-        ///    &lt;title&gt;sqlpal&lt;/title&gt;
-        ///    &lt;link href=/main.css rel=preload as= style&gt;
-        ///    &lt;link href=/vendor.css rel=preload as= style&gt;
-        ///    &lt;link href=/app.js rel=preload as=script&gt;
-        ///    &lt;link href=/vendor.js rel=preload as=script&gt;
-        ///    &lt;link href=/vendor.css rel=stylesheet&gt;
-        ///    &lt;link  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;&lt;html lang=en&gt;&lt;head&gt;&lt;meta charset=utf-8&gt;&lt;meta http-equiv=X-UA-Compatible content=&quot;IE=edge&quot;&gt;&lt;meta name=viewport content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;link rel=icon href=/favicon.ico&gt;&lt;title&gt;sqlpal&lt;/title&gt;&lt;link href=/main.css rel=preload as=style&gt;&lt;link href=/vendor.css rel=preload as=style&gt;&lt;link href=/app.js rel=preload as=script&gt;&lt;link href=/vendor.js rel=preload as=script&gt;&lt;link href=/vendor.css rel=stylesheet&gt;&lt;link href=/main.css rel=stylesheet&gt;&lt;/head&gt;&lt;body&gt;&lt;noscript&gt;&lt;strong&gt;We&apos;re sorry [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string index_html {
             get {
@@ -129,7 +116,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sum avg min max count row_number rank isnull coalesce nullif getdate getutcdate getdate day month year len trim stuff datepart eomonth suser_sname cast convert db_name dateadd datediff.
+        ///   Looks up a localized string similar to sum avg min max count row_number rank isnull coalesce nullif getdate getutcdate getdate day month year len trim stuff datepart eomonth suser_sname cast convert db_name dateadd datediff @@ROWCOUNT.
         /// </summary>
         internal static string keywords2 {
             get {
@@ -138,7 +125,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #objectNavigator[data-v-725f895e]{float:left;width:25%;height:800px;overflow:auto;background:#f8f8f8;padding:20px}#textCtrl[data-v-725f895e]{float:left;padding:20px;width:70%;height:800px;overflow:auto;background-color:#fff}#connectionString[data-v-725f895e]{color:purple;font-size:small}#currentObjName[data-v-725f895e]{color:red;font-size:small}section[data-v-725f895e]:after{content:&quot;&quot;;display:table;clear:both}#objectList[data-v-725f895e]{width:250px;list-style-type:none;padding:0;padding-left:3px}#database [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to #SqlMain[data-v-e841d202]{margin:10px}#objectNavigator[data-v-e841d202]{float:left;width:25%;height:800px;overflow:auto;background:#f8f8f8;padding:20px}#textCtrl[data-v-e841d202]{float:left;padding:20px;width:70%;height:800px;background-color:#fff}#connectionString[data-v-e841d202]{color:purple;font-size:small}#currentObjName[data-v-e841d202]{color:red;font-size:small}section[data-v-e841d202]:after{content:&quot;&quot;;display:table;clear:both}#objectList[data-v-e841d202]{width:250px;list-style-type:none;padding:0;pa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string main_css {
             get {
@@ -268,7 +255,7 @@ namespace SQLServerUtils {
         /// <summary>
         ///   Looks up a localized string similar to  select distinct type, type_desc 
         ///   from sys.objects
-        ///  where type in (&apos;P&apos;, &apos;TF&apos;, &apos;IF&apos;, &apos;FN&apos;, &apos;V&apos;, &apos;U&apos;);.
+        ///  where type in (&apos;P&apos;, &apos;TF&apos;, &apos;IF&apos;, &apos;FN&apos;, &apos;V&apos;, &apos;U&apos;,&apos;SN&apos;);.
         /// </summary>
         internal static string queryObjectTypes_sql {
             get {
@@ -277,16 +264,18 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT  row_number() OVER (ORDER BY [column].column_id) as &apos;@columnOrder&apos;,
-        ///        [column].name AS &apos;@columnName&apos;,
-        ///		[type].name AS &apos;@typeName&apos;, 
-        ///		[type].max_length AS &apos;@maxLength&apos;,
-        ///		[type].precision AS &apos;@precision&apos;,
+        ///   Looks up a localized string similar to SELECT DISTINCT 
+        ///        isc.ORDINAL_POSITION &apos;@columnOrder&apos;,
+        ///		[column].name AS &apos;@columnName&apos;,
+        ///		isc.DATA_TYPE AS &apos;@typeName&apos;, 
+        ///		isc.CHARACTER_MAXIMUM_LENGTH &apos;@maxLength&apos;,		
+        ///		isc.NUMERIC_PRECISION AS &apos;@precision&apos;,
         ///		case [column].is_nullable when 1 then &apos;Yes&apos; when 0 then &apos;No&apos; end AS &apos;@is_nullable&apos;,
         ///		case [column].is_identity when 1 then &apos;Yes&apos; when 0 then &apos;No&apos; end AS &apos;@is_identity&apos;
+        ///		
         ///	FROM sys.tables [table]
-        ///	INNER JOIN sys.columns [column] ON [table].object_id = [column].object_id
-        ///	INNER JOIN sys.types  [rest of string was truncated]&quot;;.
+        ///	INNER JOIN sys.columns [column] ON [table].object_id = [column].object_id	
+        ///	INNER JOIN sys.sche [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string queryTableXml_sql {
             get {
@@ -309,7 +298,7 @@ namespace SQLServerUtils {
         ///    xmlns:msxsl=&quot;urn:schemas-microsoft-com:xslt&quot; exclude-result-prefixes=&quot;msxsl&quot;&gt;
         ///    &lt;xsl:output method=&quot;xml&quot; indent=&quot;yes&quot;/&gt;  
         ///    &lt;xsl:template match=&quot;/&quot;&gt;
-        ///      &lt;table&gt;
+        ///      &lt;table class=&apos;table  table-striped&apos;&gt;
         ///        &lt;tr&gt;
         ///          &lt;th&gt;№&lt;/th&gt;
         ///          &lt;th&gt;Column Name&lt;/th&gt;
@@ -317,8 +306,7 @@ namespace SQLServerUtils {
         ///          &lt;th&gt;Max Length&lt;/th&gt;
         ///          &lt;th&gt;Precision&lt;/th&gt;
         ///          &lt;th&gt;Is nullable&lt;/th&gt;
-        ///          &lt;th&gt;Is identity&lt;/th&gt;
-        ///         [rest of string was truncated]&quot;;.
+        ///           [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string table2html_xslt {
             get {
@@ -327,22 +315,16 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /*!
-        /// * Bootstrap v4.3.1 (https://getbootstrap.com/)
-        /// * Copyright 2011-2019 The Bootstrap Authors
-        /// * Copyright 2011-2019 Twitter, Inc.
-        /// * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-        /// */:root{--blue:#007bff;--indigo:#6610f2;--purple:#6f42c1;--pink:#e83e8c;--red:#dc3545;--orange:#fd7e14;--yellow:#ffc107;--green:#28a745;--teal:#20c997;--cyan:#17a2b8;--white:#fff;--gray:#6c757d;--gray-dark:#343a40;--primary:#007bff;--secondary:#6c757d;--success:#28a745;--info:#17a2b8;--warning:#ffc [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to .CodeMirror{font-family:monospace;height:300px;color:#000;direction:ltr}.CodeMirror-lines{padding:4px 0}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding:0 4px}.CodeMirror-gutter-filler,.CodeMirror-scrollbar-filler{background-color:#fff}.CodeMirror-gutters{border-right:1px solid #ddd;background-color:#f7f7f7;white-space:nowrap}.CodeMirror-linenumber{padding:0 3px 0 5px;min-width:20px;text-align:right;color:#999;white-space:nowrap}.CodeMirror-guttermarker{color:#000}.CodeMirror-gut [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string vendor_css {
             get {
                 return ResourceManager.GetString("vendor_css", resourceCulture);
             }
         }
-
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to (window[&quot;webpackJsonp&quot;]=window[&quot;webpackJsonp&quot;]||[]).push([[&quot;chunk-vendors&quot;],{&quot;01f9&quot;:function(t,e,n){&quot;use strict&quot;;var r=n(&quot;2d00&quot;),i=n(&quot;5ca1&quot;),o=n(&quot;2aba&quot;),a=n(&quot;32e9&quot;),s=n(&quot;84f2&quot;),l=n(&quot;41a0&quot;),u=n(&quot;7f20&quot;),c=n(&quot;38fd&quot;),f=n(&quot;2b4c&quot;)(&quot;iterator&quot;),d=!([].keys&amp;&amp;&quot;next&quot;in[].keys()),p=&quot;@@iterator&quot;,h=&quot;keys&quot;,v=&quot;values&quot;,b=function(){return this};t.exports=function(t,e,n,m,g,y,w){l(n,e,m);var O,S,P,T=function(t){if(!d&amp;&amp;t in j)return j[t];switch(t){case h:return function(){return new n(this,t)};case v:return function(){return  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to (window[&quot;webpackJsonp&quot;]=window[&quot;webpackJsonp&quot;]||[]).push([[&quot;chunk-vendors&quot;],{&quot;01f9&quot;:function(t,e,n){&quot;use strict&quot;;var r=n(&quot;2d00&quot;),i=n(&quot;5ca1&quot;),o=n(&quot;2aba&quot;),a=n(&quot;32e9&quot;),s=n(&quot;84f2&quot;),l=n(&quot;41a0&quot;),c=n(&quot;7f20&quot;),u=n(&quot;38fd&quot;),d=n(&quot;2b4c&quot;)(&quot;iterator&quot;),f=!([].keys&amp;&amp;&quot;next&quot;in[].keys()),h=&quot;@@iterator&quot;,p=&quot;keys&quot;,m=&quot;values&quot;,v=function(){return this};t.exports=function(t,e,n,g,b,y,w){l(n,e,g);var O,x,_,S=function(t){if(!f&amp;&amp;t in P)return P[t];switch(t){case p:return function(){return new n(this,t)};case m:return function(){return  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string vendor_js {
             get {
@@ -351,7 +333,7 @@ namespace SQLServerUtils {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;version&quot;:3,&quot;sources&quot;:[&quot;webpack:///./node_modules/core-js/modules/_iter-define.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_string-at.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_advance-string-index.js&quot;,&quot;webpack:///./node_modules/core-js/modules/es7.promise.finally.js&quot;,&quot;webpack:///./node_modules/axios/lib/core/Axios.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_flags.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_object-keys.js&quot;,&quot;webpack:///./node_modules/axios/lib/helpers/spread.js&quot;,&quot;webpack:/// [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;version&quot;:3,&quot;sources&quot;:[&quot;webpack:///./node_modules/core-js/modules/_iter-define.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_string-at.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_advance-string-index.js&quot;,&quot;webpack:///./node_modules/bs58/index.js&quot;,&quot;webpack:///./node_modules/core-js/modules/es7.promise.finally.js&quot;,&quot;webpack:///./node_modules/axios/lib/core/Axios.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_flags.js&quot;,&quot;webpack:///./node_modules/core-js/modules/_object-keys.js&quot;,&quot;webpack:///./node_modules [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string vendor_map {
             get {

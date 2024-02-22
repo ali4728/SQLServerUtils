@@ -123,7 +123,7 @@
   </data>
   <data name="app_map" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>web\app.map;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>  
+  </data>
   <data name="connectionStringTemplate" xml:space="preserve">
     <value>Data Source={0};Initial Catalog={1};Integrated Security=True</value>
   </data>
@@ -135,7 +135,7 @@
     <comment>SQL keywords 1</comment>
   </data>
   <data name="keywords2" xml:space="preserve">
-    <value>sum avg min max count row_number rank isnull coalesce nullif getdate getutcdate getdate day month year len trim stuff datepart eomonth suser_sname cast convert db_name dateadd datediff</value>
+    <value>sum avg min max count row_number rank isnull coalesce nullif getdate getutcdate getdate day month year len trim stuff datepart eomonth suser_sname cast convert db_name dateadd datediff @@ROWCOUNT</value>
     <comment>SQL keywords 2</comment>
   </data>
   <data name="main_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -179,13 +179,13 @@
   </data>
   <data name="vendor_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>web\vendor.css;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data> 
+  </data>
   <data name="vendor_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>web\vendor.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="vendor_map" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>web\vendor.map;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>  
+  </data>
   <data name="vue_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>web\vue.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

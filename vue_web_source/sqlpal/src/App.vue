@@ -1,25 +1,23 @@
 <template>
-  <div id="app">    
+  <div id="app">
     <router-view />
   </div>
 </template>
 
 <script>
-import SqlMain from './components/SqlMain.vue'
+import SqlMain from "./components/SqlMain.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     SqlMain
   },
   data() {
     return {
-      title: 'Sql Pal'
-    }
+      title: "Sql Pal"
+    };
   }
-}
-
-
+};
 </script>
 <style>
 #app {
@@ -65,55 +63,51 @@ export default {
 
 } */
 
-
 .olclass {
-    list-style-type: none;
-    /* margin: 8px 0 0; */
-    padding-left: 0;
-    counter-reset: line;
+  list-style-type: none;
+  /* margin: 8px 0 0; */
+  padding-left: 0;
+  counter-reset: line;
 }
 
 .olclass li {
-    position: relative;
-    display: block;
-    /* clear: both; */
-    width: 100%;
-    /* font-size: 13px; */
-    line-height: 12px; 
-    white-space: pre-wrap;
+  position: relative;
+  display: block;
+  /* clear: both; */
+  width: 100%;
+  /* font-size: 13px; */
+  line-height: 12px;
+  white-space: pre-wrap;
 }
 
 .olclass li .line {
-    display: inline-block;
-    /* float: right; */
-    width: calc(100% - 70px);
+  display: inline-block;
+  /* float: right; */
+  width: calc(100% - 70px);
 }
 
 .olclass li::before {
-    content: counter(line);
-    display: inline-block;
-    /* float: left; */
-    width: 40px;
-    margin-right: 20px;
-    margin-top: 10px;
-    color: gray;
-    text-align: right;
-    font-style: normal;
-    counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  /* float: left; */
+  width: 40px;
+  margin-right: 20px;
+  margin-top: 10px;
+  color: gray;
+  text-align: right;
+  font-style: normal;
+  counter-increment: line;
 }
-
 
 .preMargin {
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 0;
   margin-left: 8px;
-  padding: 0p;  
-  white-space: pre-wrap; 
+  padding: 0p;
+  white-space: pre-wrap;
   word-break: break-word;
-
 }
-
 
 /* generic */
 /* .tblclass {
@@ -126,61 +120,59 @@ export default {
 } */
 
 .tblclass tr td {
-    white-space: nowrap;
+  white-space: nowrap;
 }
-
 
 /*
 <td id="L1" class="blob-num js-line-number" data-line-number="1"></td>
 */
 
 .blob-num {
-    width: 1%;
-    min-width: 50px;
-    padding-right: 10px;
-    padding-left: 10px;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-    font-size: 12px;
-    line-height: 20px;
-    /* line-height: 1.0; */
-    /* color: var(--color-diff-blob-num-text); */
-    color: gray;
-    text-align: right;
-    white-space: nowrap;
-    vertical-align: bottom;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  width: 1%;
+  min-width: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  /* line-height: 1.0; */
+  /* color: var(--color-diff-blob-num-text); */
+  color: gray;
+  text-align: right;
+  white-space: nowrap;
+  vertical-align: bottom;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .blob-num:before {
-    content: attr(data-line-number);
+  content: attr(data-line-number);
 }
-
 
 /* <td id="LC1" class="blob-code blob-code-inner js-file-line"></td>*/
 
 .blob-code {
-    position: relative;
-    padding-right: 10px;
-    padding-left: 10px;
-    line-height: 20px;
-    /* line-height: 1.0; */
-    vertical-align: bottom;
+  position: relative;
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 20px;
+  /* line-height: 1.0; */
+  vertical-align: bottom;
 }
 
 .blob-code-inner {
-    overflow: visible;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-    font-size: 12px;
-    /* color: var(--color-text-primary); */
-    word-wrap: normal;
-    white-space: pre;
+  overflow: visible;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 12px;
+  /* color: var(--color-text-primary); */
+  word-wrap: normal;
+  white-space: pre;
 }
-.blob-code-inner::selection, .blob-code-inner ::selection {
-    background-color:#ccddff;
+.blob-code-inner::selection,
+.blob-code-inner ::selection {
+  background-color: #ccddff;
 }
-
 </style>

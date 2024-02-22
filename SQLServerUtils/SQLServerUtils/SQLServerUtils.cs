@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 
 namespace SQLServerUtils
@@ -9,7 +10,11 @@ namespace SQLServerUtils
         {
             static void Main()
             {
-                TheHttpServer httpServer = new TheHttpServer("http://localhost:8084/");
+
+                string port = ConfigurationManager.AppSettings["Port"];
+                string url = $"http://localhost:{port}/";
+
+                TheHttpServer httpServer = new TheHttpServer(url);
                 httpServer.Start();
                 Console.ReadKey();
                 httpServer.Stop();

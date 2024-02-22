@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.SqlServer.Management.Smo;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace SQLServerUtils
 {
@@ -111,6 +113,58 @@ namespace SQLServerUtils
         {            
             sendStaticResource(context.Response, Resources.index_html, "text/html");
         }
+
+
+        //openInNotepadd
+        [RequestMapping("/openInNotepadd", "POST")]
+        public void handleOpenInNotepaddRequest(HttpListenerContext context)
+        {
+            try
+            {
+                ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
+                SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
+                string result = "";
+                string objectName = context.Request.QueryString[Resources.objectNameParam];
+                string schemaName = context.Request.QueryString[Resources.schemaNameParam];
+                string flPath = "Error";
+                if (objectName != null && !string.IsNullOrEmpty(objectName) && objectName.Length > 2)
+                {
+                    result = msSqlRequestService.requestOpenInNotepadd(connParams.server, connParams.database, schemaName, objectName);
+
+                    string DiffPath = ConfigurationManager.AppSettings["DiffPath"];
+                    string NPPBatEditPath = DiffPath + "\\" + "edit.bat";
+                    flPath = DiffPath + "\\" + $"{objectName}.sql";
+
+
+                    FileUtils.DeleteOldSqlFile(DiffPath, "*.sql"); // housekeeping
+
+                    FileUtils.WriteTextToFile(flPath, result);
+
+                    if (File.Exists(flPath))
+                    {
+                        System.Diagnostics.Process.Start(NPPBatEditPath, $"\"{flPath}\"");
+                        Console.WriteLine($"Notepad++ started for {flPath}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"File {flPath} not exist");
+
+                    }
+
+                    
+
+                    
+                }
+                sendStaticResource(context.Response, $"Notepad++ started for {flPath}", "text/html");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                sendStaticResourceWithCode(context.Response, JObject.FromObject(new { errorMessage = ex.Message }).ToString(), "application/json", 406);
+                return;
+            }
+        }
+
 
         [RequestMapping("/objtext", "POST")]
         public void handleGetObjTextRequest(HttpListenerContext context)
@@ -223,11 +277,13 @@ namespace SQLServerUtils
                 string searchTable = context.Request.QueryString["searchTable"];
                 string searchColumn = context.Request.QueryString["searchColumn"];
                 string searchView = context.Request.QueryString["searchView"];
+                string searchSynonym = context.Request.QueryString["searchSynonym"];
 
                 string searchAllDbs = context.Request.QueryString["searchAllDbs"];
                 string searchAllServers = context.Request.QueryString["searchAllServers"];
+                
 
-                Console.WriteLine("searchSP:" + searchSP + " searchTable:" + searchTable + " searchColumn:" + searchColumn + " searchView:" + searchView + " searchAllDbs:" + searchAllDbs + " searchAllServers:" + searchAllServers);
+                Console.WriteLine("searchSP:" + searchSP + " searchTable:" + searchTable + " searchColumn:" + searchColumn + " searchView:" + searchView + " searchSynonym:" + searchSynonym +  " searchAllDbs:" + searchAllDbs + " searchAllServers:" + searchAllServers);
 
                 List<string> tempList = new List<string>();
 
@@ -273,6 +329,12 @@ namespace SQLServerUtils
                
                 }
 
+                if (searchSynonym.Equals("true"))
+                {
+                    objTypeList.Add("synonym");
+
+                }
+                
 
                 if (objTypeList.Count > 0 && serverList.Count > 0 && !string.IsNullOrEmpty(connParams.server) && !string.IsNullOrEmpty(connParams.database))
                 {
@@ -299,6 +361,115 @@ namespace SQLServerUtils
             }
         }
 
+        [RequestMapping("/HiLiteSearch", "POST")]
+        public void handleHiLiteSearchRequest(HttpListenerContext context)
+        {
+            try
+            {
+
+
+                ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
+                SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
+
+                string result = "";
+                string objName = context.Request.QueryString["objName"];
+
+
+                Console.WriteLine($"HiLiteSearch objName: {objName}  received by server");
+
+                string databaseLocal = connParams.database;
+
+                if (objName.Contains("."))
+                {
+                    string[] parts = objName.Split('.');
+                    objName = parts[parts.Length - 1].Replace("[", "").Replace("]", "").Trim();
+
+                    if (parts.Length == 3) //indicates another server is used
+                    {
+                        databaseLocal = parts[0].Replace("[", "").Replace("]", "").Trim();                        
+                    }
+                }
+                Console.WriteLine($"databaseLocal: {databaseLocal}");
+
+                result = msSqlRequestService.requestObjectScript(connParams.server, databaseLocal, objName);
+                
+                sendStaticResource(context.Response, result, "text/html");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                sendStaticResourceWithCode(context.Response, JObject.FromObject(new { errorMessage = ex.Message }).ToString(), "application/json", 406);
+                return;
+            }
+        }
+
+        [RequestMapping("/DependentSearch", "POST")]
+        public void handleDependentSearchRequest(HttpListenerContext context)
+        {
+            try
+            {
+
+
+                ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
+                SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
+
+                string result = "";
+                string pattern = ConfigurationManager.AppSettings["DependencyRegex"];//@"(?i)(EXEC|SP_EXECUTESQL)\s[!-~]+\s";
+                bool useheader = true;
+
+                string objDependentName = context.Request.QueryString["objDependentName"];
+                string regexDependent = context.Request.QueryString["regexDependent"];
+
+                string localregexDependent = FileUtils.DecodeFromBase58(regexDependent);
+
+                if (!string.IsNullOrEmpty(localregexDependent) && localregexDependent.Length > 0)
+                {
+                    Console.WriteLine($"Will use front end regex: {localregexDependent}");
+                    pattern = localregexDependent;
+                }
+
+                Console.WriteLine($"objDependentName: {objDependentName}  received by server");
+
+                result = msSqlRequestService.requestDependentInfo(objDependentName, connParams.database, pattern, useheader);
+
+                sendStaticResource(context.Response, result, "text/html");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                sendStaticResourceWithCode(context.Response, JObject.FromObject(new { errorMessage = ex.Message }).ToString(), "application/json", 406);
+                return;
+            }
+        }
+
+        [RequestMapping("/GetTableColumns", "POST")]
+        public void handleGetTableColumns(HttpListenerContext context)
+        {
+            try
+            {
+
+
+                ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
+                SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, connParams.database);
+
+                string result = "";
+           
+                string tableName = context.Request.QueryString["tableName"];
+           
+                Console.WriteLine($"Will execute GetTableColumns() tableName: {tableName}  received by the server");
+
+                result = msSqlRequestService.requestGetTableColumns(tableName);
+
+                sendStaticResource(context.Response, result, "text/html");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                sendStaticResourceWithCode(context.Response, JObject.FromObject(new { errorMessage = ex.Message }).ToString(), "application/json", 406);
+                return;
+            }
+        }
+
         [RequestMapping("/querydatabase", "POST")]
         public void handleQueryDatabaseRequest(HttpListenerContext context)
         {
@@ -313,6 +484,9 @@ namespace SQLServerUtils
                 string sqlquery = context.Request.QueryString["sqlquery"];
                 string schemaName = context.Request.QueryString[Resources.schemaNameParam];
 
+                sqlquery = FileUtils.DecodeFromBase58(sqlquery);
+                Console.WriteLine("sqlquery received by server");
+                Console.WriteLine(sqlquery);
                 result = msSqlRequestService.requestAdHocSQl(sqlquery); //requestDatabaseObjectInfo(objectName, schemaName);
                 
                 sendStaticResource(context.Response, result, "text/html");
@@ -389,7 +563,10 @@ namespace SQLServerUtils
                 ConnectionDto connParams = readResponseAsJson<ConnectionDto>(context.Request);
                 SqlRequestService msSqlRequestService = new SqlRequestService(connParams.server, "master");
                 List<string> databaseList = msSqlRequestService.requestDatabaseList(string.Format(Resources.connectionStringTemplate, connParams.server, "master"));
-                sendStaticResource(context.Response, JArray.FromObject(databaseList).ToString(), "application/javascript");
+                //sendStaticResource(context.Response, JArray.FromObject(databaseList).ToString(), "application/javascript");
+                string result = JArray.FromObject(databaseList).ToString();
+                sendStaticResource(context.Response, result, "application/javascript");
+
             }
             catch (Exception ex)
             {

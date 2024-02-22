@@ -9,6 +9,12 @@ using System.Xml.Xsl;
 using SqlScriptParser;
 using Dapper;
 using System.Threading;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using System.Text.RegularExpressions;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.IO;
 
 namespace SQLServerUtils
 {
@@ -164,7 +170,7 @@ namespace SQLServerUtils
                         //return commentAndStringProcessor.Process(dbObject.object_text);
 
                         TSql_Parser tparser = new TSql_Parser();
-                        return tparser.ExecuteTable(dbObject.object_text);
+                        return tparser.ExecuteTable(dbObject.object_text.Trim());
                     }
                 }
                 return "unknown type of object";
@@ -267,6 +273,278 @@ namespace SQLServerUtils
 
         }
 
+
+        public string requestGetTableColumns(string tableName)
+        {
+            try
+            {               
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Check if the table exists
+                    using (SqlCommand cmd = new SqlCommand($"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'{tableName}'", connection))
+                    {
+                        int count = (int)cmd.ExecuteScalar();
+                        if (count == 0)
+                        {
+                            return $"{tableName} does not exist";
+                        }
+                    }
+
+                    StringBuilder query = new StringBuilder("SELECT TOP 1000 ");
+                    using (SqlCommand command = new SqlCommand($"SELECT TOP 0 * FROM {tableName}", connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            var table = reader.GetSchemaTable();
+                            for (int i = 0; i < table.Rows.Count; i++)
+                            {
+                                query.Append(table.Rows[i]["ColumnName"].ToString());
+                                if (i < table.Rows.Count - 1)
+                                {
+                                    query.AppendLine(", ");
+                                }
+                            }
+                        }
+                    }
+                    query.AppendLine("");
+                    query.Append($" FROM {tableName}");
+                    return query.ToString();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string retMsg = $"Error in requestGetTableColumns() using tablename: {tableName} Error: {ex.Message}";
+
+                Console.WriteLine(ex.Message);
+                return retMsg;
+
+            }
+
+        }
+
+        public string requestObjectScript(string serverName, string databaseName, string objectName)
+        {
+            try
+            {
+                StringBuilder retVal = new StringBuilder();
+
+                string objectType = FileUtils.GetObjectType(serverName, databaseName, objectName);
+
+                string connectionStringLocal = $"Data Source={serverName};Initial Catalog={databaseName};Integrated Security=True";
+                Console.WriteLine($"In requestObjectScript() objectType {objectType} using {connectionStringLocal}");
+                using (SqlConnection connection = new SqlConnection(connectionStringLocal))
+                {
+                    Server server = new Server(new ServerConnection(connection));
+
+                    Scripter scripter = new Scripter(server);
+                    scripter.Options.ScriptDrops = false;
+                    scripter.Options.NoCollation = true;
+
+                    Database db = server.Databases[databaseName];
+
+                   
+
+                    // Get the object and generate the script
+                    StringCollection result = null;
+                    switch (objectType)
+                    {
+                        case "Table":
+                            if (db.Tables.Contains(objectName))
+                            {
+                                result = db.Tables[objectName].Script(scripter.Options);
+                            }
+                            break;
+                        case "View":
+                            if (db.Views.Contains(objectName))
+                            {
+                                result = db.Views[objectName].Script();
+                            }
+                            break;
+                        case "Synonym":
+                            if (db.Synonyms.Contains(objectName))
+                            {
+                                result = db.Synonyms[objectName].Script();
+                            }
+                            break;
+                        case "StoredProcedure":
+                            if (db.StoredProcedures.Contains(objectName))
+                            {
+                                result = db.StoredProcedures[objectName].Script();
+                            }
+                            break;
+                        case "ScalarFunction":
+                            if (db.UserDefinedFunctions.Contains(objectName) && db.UserDefinedFunctions[objectName].FunctionType == UserDefinedFunctionType.Scalar)
+                            {
+                                result = db.UserDefinedFunctions[objectName].Script();
+                            }
+                            break;
+                        case "TableValuedFunction":
+                            if (db.UserDefinedFunctions.Contains(objectName) && db.UserDefinedFunctions[objectName].FunctionType == UserDefinedFunctionType.Table)
+                            {
+                                result = db.UserDefinedFunctions[objectName].Script();
+                            }
+                            break;
+                        case "InlineTableValuedFunction":
+                            if (db.UserDefinedFunctions.Contains(objectName) && db.UserDefinedFunctions[objectName].FunctionType == UserDefinedFunctionType.Inline)
+                            {
+                                result = db.UserDefinedFunctions[objectName].Script();
+                            }
+                            break;
+                        default:
+                            Console.WriteLine($"{objectType} is not known");
+                            break;
+                    }
+
+                    // Output the script
+                    if (result != null)
+                    {
+                        foreach (string str in result)
+                        {
+                            retVal.AppendLine(str);
+                        }
+                    }
+                    else
+                    {                        
+                        return $"<p>{objectName}<span style='color:red'> is not found</span></p>";
+                    }
+
+
+                }
+
+                string retValCleansed = retVal.ToString()
+                        .Replace("SET ANSI_NULLS ON", "")
+                        .Replace("SET QUOTED_IDENTIFIER ON","").Trim();
+
+                if ("Table".Equals(objectType))
+                {
+                    retValCleansed = retValCleansed.Replace("[","").Replace("]", "");
+                }
+
+                TSql_Parser parser = new TSql_Parser();
+                string retValHtml =  parser.Execute(retValCleansed);
+
+                return retValHtml;
+
+            }
+            catch (Exception ex)
+            {                
+                string retMsg = $"<p><span style='color:red'>{ex.Message}</span></p>";
+
+                Console.WriteLine(ex.Message);
+                return retMsg;
+
+            }
+
+        }
+
+        public string requestDependentInfo(string objectName, string databaseName, string pattern, bool useheader)
+        {   
+            DataTable table = new DataTable();
+
+            try
+            {
+
+             
+                //int cnt = 0;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    Server server = new Server(new ServerConnection(connection));
+                    Database database = server.Databases[databaseName];
+
+                    List<string> matches = new List<string>();
+
+
+
+                    // Add three columns
+                    table.Columns.Add("LineNumber", typeof(string));
+                    table.Columns.Add("ObjectName", typeof(string));
+                    table.Columns.Add("DependentObject", typeof(string));
+
+
+                    StoredProcedure storedProcedure = database.StoredProcedures[objectName.Replace("dbo.","")];
+                    if (storedProcedure != null)
+                    {
+                        string text = "";
+
+                        if (useheader)
+                        {
+                            text = storedProcedure.TextHeader + "\r\n" + storedProcedure.TextBody;
+                        }
+                        else
+                        {
+                            text = storedProcedure.TextBody;
+                        }
+
+
+                        foreach (Match match in Regex.Matches(text, pattern))
+                        {
+                            int lineNumber = text.Substring(0, match.Index).Split('\n').Length;
+                            string strLineNumber = lineNumber.ToString().PadLeft(6, ' ');
+                            matches.Add($"{strLineNumber} - {storedProcedure.Name} - {match.Value}");
+                            table.Rows.Add(strLineNumber, storedProcedure.Name, match.Value);
+                        }
+
+
+                    }
+                   
+
+                    //foreach (StoredProcedure storedProcedure in database.StoredProcedures)
+                    //{
+
+                    //    if (storedProcedure.IsSystemObject)
+                    //    {
+                    //        cnt++;
+                    //        if (cnt % 100 == 0)
+                    //        {
+                    //            Console.WriteLine($"DependentInfo count: {cnt.ToString().PadLeft(6, ' ')}");
+                    //        }
+
+                    //        continue;
+                    //    }
+
+                    //    string text = "";
+
+                    //    if (useheader)
+                    //    {
+                    //        text = storedProcedure.TextHeader + "\r\n" + storedProcedure.TextBody;
+                    //    }
+                    //    else
+                    //    {
+                    //        text = storedProcedure.TextBody;
+                    //    }
+
+
+
+
+                    //    foreach (Match match in Regex.Matches(text, pattern))
+                    //    {
+                    //        int lineNumber = text.Substring(0, match.Index).Split('\n').Length;
+                    //        string strLineNumber = lineNumber.ToString().PadLeft(6, ' ');
+                    //        matches.Add($"{strLineNumber} - {storedProcedure.Name} - {match.Value}");
+                    //    }
+                    //}
+
+                }
+               
+                if(table.Rows.Count == 0)
+                {
+                    table.Rows.Add("0", "No dependency found", "");
+                }
+
+                return ConvertDataTableToHTML(table); 
+            }
+            catch (Exception ex)
+            {
+                string retMsg = $"<p><span style='color:red'>{ex.Message}</span></p>";
+                Console.WriteLine(ex.Message);
+                return retMsg;
+
+            }
+
+        }
 
 
         public string requestAdHocSQl(string sqlquery)
@@ -464,6 +742,24 @@ namespace SQLServerUtils
             List<string> retListError = new List<string>();
             List<string> retListAll = new List<string>();
 
+
+            string TrackDBInfo = ConfigurationManager.AppSettings["TrackDBInfo"];
+            Console.WriteLine($"TrackDBInfo: {TrackDBInfo}");
+            string DiffPath = ConfigurationManager.AppSettings["DiffPath"];
+            string FileTrackDBInfo = $"{DiffPath}\\TrackDBInfo.txt";
+
+            List<string> listTrackedDBInfo = new List<string>();
+            List<string> listTrackedDBInfoOrig = new List<string>();
+
+            if ("true".Equals(TrackDBInfo))
+            {
+                if (File.Exists(FileTrackDBInfo))
+                {
+                    listTrackedDBInfo = FileUtils.GetListOfFileContent(FileTrackDBInfo);
+                    listTrackedDBInfoOrig = FileUtils.GetListOfFileContent(FileTrackDBInfo);
+                }
+            }
+            
             foreach (string server in serverList)
             {                
 
@@ -478,13 +774,26 @@ namespace SQLServerUtils
 
                 foreach (string database in databaseList)
                 {
+
+
                     List<string> listofObjects = new List<string>();
                     allObjList.Add(listofObjects);
 
-                    Thread t = new Thread(() => SearchDB(searchString, server, database, objTypeList, ref listofObjects));
-                    threads.Add(t);
-                    t.Name = server + "-" + database;
-                    t.Start();
+                    string dbbinfo = $"{server.Trim().ToLower()}|{database.Trim().ToLower()}";
+                    
+                    if ("true".Equals(TrackDBInfo) && listTrackedDBInfo.Contains(dbbinfo))
+                    {                        
+                        Console.WriteLine($"{dbbinfo} is skipped");                        
+                    }
+                    else
+                    {
+                        Thread t = new Thread(() => SearchDB(searchString, server, database, objTypeList, ref listTrackedDBInfo, ref listofObjects));
+                        threads.Add(t);
+                        t.Name = server + "-" + database;
+                        t.Start();
+                    }
+
+
                 }
 
                 foreach (Thread item in threads)
@@ -516,12 +825,46 @@ namespace SQLServerUtils
 
             }
             //sort before sending
+
+
+            if ("true".Equals(TrackDBInfo))
+            {
+                foreach (string item in listTrackedDBInfo)
+                {
+                    if (!listTrackedDBInfoOrig.Contains(item))
+                    {
+                        FileUtils.AppendToFile(FileTrackDBInfo, item);
+                    }
+                }
+
+            }
+
+
             return retListAll;
         }
 
-        public void SearchDB(string searchString, string server, string database, List<string> objTypeList, ref List<string> listofObjects)
+        public void SearchDB(string searchString, string server, string database, List<string> objTypeList, ref List<string> listTrackedDBInfo, ref List<string> listofObjects)
         {
+            string searchString2 = "";
+
+            if (searchString.Contains("||"))
+            {
+                string[] searchStringArray = searchString.Trim().Split(new string[] { "||" }, StringSplitOptions.None);
+
+                foreach (string item in searchStringArray)
+                {
+                    searchString2 += $" and b.text like '%{item}%' \r\n";
+                }
+            }
+            else
+            {
+                searchString2 = $"and b.text like '%{searchString}%'";
+            }
+
             Console.WriteLine("thread " + server + "." +  database + "started");
+
+            string TrackDBInfo = ConfigurationManager.AppSettings["TrackDBInfo"];
+    
 
             string connString = string.Format(Resources.connectionStringTemplate, server, database);
 
@@ -550,7 +893,7 @@ namespace SQLServerUtils
                             query = ""
                                 + "select distinct schema_name(a.schema_id) SchemaName,  a.name ObjectName	"
                                 + "from sys.objects a join sys.syscomments b on a.object_id = b.id where a.type = 'p' "
-                                + "and b.text like '%" + searchString + "%' ";
+                                + searchString2;  //+ "and b.text like '%" + searchString + "%' ";
                         }
                         else if (dbObjectType.Equals("column"))
                         {
@@ -568,6 +911,14 @@ namespace SQLServerUtils
                                 + "select distinct schema_name(a.schema_id) SchemaName,  a.name ObjectName	"
                                 + "from sys.objects a join sys.syscomments b on a.object_id = b.id where a.type = 'v' "
                                 + "and b.text like '%" + searchString + "%' ";
+                        }
+                        else if (dbObjectType.Equals("synonym"))
+                        {
+                            query = ""
+                                 + "SELECT distinct schema_name(o.schema_id) SchemaName, s.name "
+                                 + "FROM sys.synonyms s "
+                                 + "JOIN sys.objects o on o.object_id = s.object_id "
+                                 + "WHERE ( s.name LIKE '%" + searchString + "%' OR s.base_object_name LIKE '%" + searchString + "%') ";
                         }
                         else
                         {
@@ -595,11 +946,25 @@ namespace SQLServerUtils
 
 
                     conn.Close();
+
                 }
                 catch (Exception exdb)
                 {
                     listofObjects.Add("dbObjectType ALL" + "." + server + "." + database + "." + "ERROR" + "." + exdb.Message);
                     if (conn != null) { conn.Close(); }
+
+
+                    if ("true".Equals(TrackDBInfo))
+                    {
+                        string dbbinfo = $"{server.Trim().ToLower()}|{database.Trim().ToLower()}";
+                        if (!listTrackedDBInfo.Contains(dbbinfo))
+                        {                            
+                            listTrackedDBInfo.Add(dbbinfo);
+                            Console.WriteLine($"{dbbinfo} is writted to tracker");
+                        }
+                    }
+
+
                 }
             }
 
@@ -608,7 +973,49 @@ namespace SQLServerUtils
 
         }
 
-       
+        public string requestOpenInNotepadd(string server, string database, string schemaName, string objectName)
+        {
+            try
+            {
+                string connectionString = string.Format(Resources.connectionStringTemplate, server, database);
+
+                using (var sqlConn = openConnection(connectionString))
+                {
+
+                    DbObject dbObject = null;
+                    try
+                    {
+                        dbObject = sqlConn.Query<DbObject>(Resources.queryObjectInfo_sql, new { objectName = objectName, schemaName = schemaName }).Single();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        return $"object '{schemaName}.{objectName}' not exists";
+                    }
+
+
+
+                    if (dbObject.type_desc == "USER_TABLE")
+                    {
+                        return $"object type user_table '{schemaName}.{objectName}' not supported.";
+                    }
+
+                    if (dbObject != null)
+                    {
+                        return dbObject.object_text;
+                    }
+
+
+                }
+                return "unknown type of object";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex}");
+                return $"Exception: {ex}";
+            }
+
+
+        }
         public string requestDiff(string objectType, string server, string database, string schemaName, string objectName)
         {
             try
